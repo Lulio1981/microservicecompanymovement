@@ -46,7 +46,14 @@ public class CompanyMovementController {
 	}
 
 	@GetMapping("/id/{movementType}/idOriginMovement/{idOriginMovement}")
-	public Flux<CompanyMovement> searchByMovementAndIdCompany(@PathVariable Integer movementType, @PathVariable String idOriginMovement) {
-		return companyMovementService.findByMovementType(movementType, idOriginMovement);
+	public Flux<CompanyMovement> searchByMovementAndIdOriginCompany(@PathVariable Integer movementType,
+			@PathVariable String idOriginMovement) {
+		return companyMovementService.findByMovementTypeOrigin(movementType, idOriginMovement);
+	}
+
+	@GetMapping("/id/{movementType}/idDestinyMovement/{idDestinyMovement}")
+	public Flux<CompanyMovement> searchByMovementAndIdDestinyCompany(@PathVariable Integer movementType,
+			@PathVariable String idDestinyMovement) {
+		return companyMovementService.findByMovementTypeOrigin(movementType, idDestinyMovement);
 	}
 }

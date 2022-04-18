@@ -20,6 +20,6 @@ public interface CompanyMovementService {
 
 	public Flux<CompanyMovement> findByMovementTypeOrigin(Integer movementType, String idOriginMovement);
 
-	public Flux<CompanyMovement> findByMovementTypeDestiny(Integer movementType, String idOriginMovement);
+	public Flux<CompanyMovement> findByMovementTypeDestiny(Integer movementType, String idDestinyMovement);
 
 }
