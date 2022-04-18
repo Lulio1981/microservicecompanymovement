@@ -9,9 +9,9 @@ import reactor.core.publisher.Mono;
 
 public interface CompanyMovementRepository extends ReactiveMongoRepository<CompanyMovement, String> {
 
-	public Flux<CompanyMovement> findByMovementTypeAndIdOriginMovement(Integer movementType, String idOriginMovement);
+	public Flux<CompanyMovement> findByIdOriginMovement(String idOriginMovement);
 
-	public Flux<CompanyMovement> findByMovementTypeAndIdDestinyMovement(Integer movementType, String idDestinyMovement);
+	public Flux<CompanyMovement> findByIdDestinyMovement(String idDestinyMovement);
 
 	public Mono<CompanyMovement> FindByOperationType(OperationType operationType);
 

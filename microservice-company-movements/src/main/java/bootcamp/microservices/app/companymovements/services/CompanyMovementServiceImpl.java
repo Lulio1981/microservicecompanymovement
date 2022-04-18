@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import bootcamp.microservices.app.companymovements.documents.CompanyMovement;
 import bootcamp.microservices.app.companymovements.exceptions.customs.CustomNotFoundException;
 import bootcamp.microservices.app.companymovements.repository.CompanyMovementRepository;
+import bootcamp.microservices.app.companymovements.utils.BalanceCalculate;
+import bootcamp.microservices.app.companymovements.utils.Constants;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -18,6 +20,9 @@ public class CompanyMovementServiceImpl implements CompanyMovementService {
 
 	@Autowired
 	private CompanyMovementRepository companyMovementRepository;
+
+	@Autowired
+	private BalanceCalculate balanceCalculate;
 
 	@Override
 	public Flux<CompanyMovement> findAll() {
@@ -42,14 +47,18 @@ public class CompanyMovementServiceImpl implements CompanyMovementService {
 
 	@Override
 	public Mono<CompanyMovement> save(CompanyMovement companyMovement) {
-		return companyMovementRepository.save(companyMovement).flatMap(cm -> {
-			if (cm.getOperationType().getShortName().equalsIgnoreCase("TRANS")
-					|| cm.getOperationType().getShortName().equalsIgnoreCase("CREPAY")) {
-				cm.setMovementType(1);
-				return companyMovementRepository.save(cm);
-			}
-			return Mono.just(companyMovement);
-		});
+		if (Double.compare(balanceCalculate.balanceAmount(companyMovement.getId()), companyMovement.getAmount()) > 0) {
+			return companyMovementRepository.save(companyMovement).flatMap(cm -> {
+				if (cm.getOperationType().getShortName().equalsIgnoreCase("TRANS")
+						|| cm.getOperationType().getShortName().equalsIgnoreCase("CREPAY")) {
+					cm.setMovementType(1);
+					return companyMovementRepository.save(cm);
+				}
+				return Mono.just(companyMovement);
+			});
+		}
+
+		return (Mono.error(new CustomNotFoundException("Insufficient balance")));
 	}
 
 	@Override
@@ -69,12 +78,12 @@ public class CompanyMovementServiceImpl implements CompanyMovementService {
 	}
 
 	@Override
-	public Flux<CompanyMovement> findByMovementTypeOrigin(Integer movementType, String idDestinyMovement) {
-		return companyMovementRepository.findByMovementTypeAndIdDestinyMovement(movementType, idDestinyMovement);
+	public Flux<CompanyMovement> findByMovementTypeOrigin(String idDestinyMovement) {
+		return companyMovementRepository.findByIdDestinyMovement(idDestinyMovement);
 	}
 
 	@Override
-	public Flux<CompanyMovement> findByMovementTypeDestiny(Integer movementType, String idOriginMovement) {
-		return companyMovementRepository.findByMovementTypeAndIdOriginMovement(movementType, idOriginMovement);
+	public Flux<CompanyMovement> findByMovementTypeDestiny(String idOriginMovement) {
+		return companyMovementRepository.findByIdOriginMovement(idOriginMovement);
 	}
 }
