@@ -45,15 +45,15 @@ public class CompanyMovementController {
 		return companyMovementService.deleteLogic(companyCredit);
 	}
 
-	@GetMapping("/id/{movementType}/idOriginMovement/{idOriginMovement}")
+	@GetMapping("idOriginMovement/{idOriginMovement}")
 	public Flux<CompanyMovement> searchByMovementAndIdOriginCompany(@PathVariable Integer movementType,
 			@PathVariable String idOriginMovement) {
-		return companyMovementService.findByMovementTypeOrigin(movementType, idOriginMovement);
+		return companyMovementService.findByMovementTypeOrigin(idOriginMovement);
 	}
 
-	@GetMapping("/id/{movementType}/idDestinyMovement/{idDestinyMovement}")
+	@GetMapping("idDestinyMovement/{idDestinyMovement}")
 	public Flux<CompanyMovement> searchByMovementAndIdDestinyCompany(@PathVariable Integer movementType,
 			@PathVariable String idDestinyMovement) {
-		return companyMovementService.findByMovementTypeOrigin(movementType, idDestinyMovement);
+		return companyMovementService.findByMovementTypeDestiny(idDestinyMovement);
 	}
 }
