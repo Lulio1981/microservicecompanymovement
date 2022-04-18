@@ -42,7 +42,14 @@ public class CompanyMovementServiceImpl implements CompanyMovementService {
 
 	@Override
 	public Mono<CompanyMovement> save(CompanyMovement companyMovement) {
-		return companyMovementRepository.save(companyMovement);
+		return companyMovementRepository.save(companyMovement).flatMap(cm -> {
+			if (cm.getOperationType().getShortName().equalsIgnoreCase("TRANS")
+					|| cm.getOperationType().getShortName().equalsIgnoreCase("CREPAY")) {
+				cm.setMovementType(1);
+				return companyMovementRepository.save(cm);
+			}
+			return Mono.just(companyMovement);
+		});
 	}
 
 	@Override
@@ -62,7 +69,12 @@ public class CompanyMovementServiceImpl implements CompanyMovementService {
 	}
 
 	@Override
-	public Flux<CompanyMovement> findByMovementType(Integer movementType, String idOriginMovement) {
+	public Flux<CompanyMovement> findByMovementTypeOrigin(Integer movementType, String idDestinyMovement) {
+		return companyMovementRepository.findByMovementTypeAndIdDestinyMovement(movementType, idDestinyMovement);
+	}
+
+	@Override
+	public Flux<CompanyMovement> findByMovementTypeDestiny(Integer movementType, String idOriginMovement) {
 		return companyMovementRepository.findByMovementTypeAndIdOriginMovement(movementType, idOriginMovement);
 	}
 }
