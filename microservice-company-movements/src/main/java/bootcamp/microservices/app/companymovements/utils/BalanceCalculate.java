@@ -3,7 +3,10 @@ package bootcamp.microservices.app.companymovements.utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import bootcamp.microservices.app.companymovements.companyaccounts.CompanyMovementFeignCompanyAccount;
+import bootcamp.microservices.app.companymovements.documents.CompanyAccount;
 import bootcamp.microservices.app.companymovements.documents.CompanyMovement;
+import bootcamp.microservices.app.companymovements.repository.CompanyMovementRepository;
 import bootcamp.microservices.app.companymovements.services.CompanyMovementService;
 
 @Component
@@ -11,6 +14,12 @@ public class BalanceCalculate {
 
 	@Autowired
 	private CompanyMovementService service;
+
+	@Autowired
+	private CompanyMovementFeignCompanyAccount companyMovementFeignCompanyAccount;
+
+	@Autowired
+	private CompanyMovementRepository companyMovementRepository;
 
 	public Double balanceAmount(String idAccount) {
 
@@ -28,6 +37,16 @@ public class BalanceCalculate {
 		totallyBalance = addIncome + addIncomeTransferAndCreditPayment - addExpenses;
 
 		return totallyBalance;
+	}
+
+	public int numberOfCompanyAccountOperations(String idOriginMovement) {
+		return Integer.parseInt(companyMovementRepository.findByIdOriginMovement(idOriginMovement)
+				.filter(cm -> cm.getOperationType().getShortName() == "DEPOS")
+				.filter(cm -> cm.getOperationType().getShortName() == "WITHD").count().block().toString());
+	}
+
+	public int numberOperationsMonth(String idOriginMovement) {
+		return companyMovementFeignCompanyAccount.searchById(idOriginMovement).block().getOperationsNumber();
 	}
 
 }

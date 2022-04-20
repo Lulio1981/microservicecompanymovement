@@ -2,24 +2,33 @@ package bootcamp.microservices.app.companymovements.services;
 
 import java.util.Date;
 
+import org.bouncycastle.crypto.macs.CMac;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import bootcamp.microservices.app.companymovements.companyaccounts.CompanyMovementFeignCompanyAccount;
 import bootcamp.microservices.app.companymovements.documents.CompanyMovement;
+import bootcamp.microservices.app.companymovements.documents.OperationType;
 import bootcamp.microservices.app.companymovements.exceptions.customs.CustomNotFoundException;
 import bootcamp.microservices.app.companymovements.repository.CompanyMovementRepository;
+import bootcamp.microservices.app.companymovements.repository.OperationTypeRepository;
 import bootcamp.microservices.app.companymovements.utils.BalanceCalculate;
 import bootcamp.microservices.app.companymovements.utils.Constants;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Service
 public class CompanyMovementServiceImpl implements CompanyMovementService {
 
 	private static final Logger log = LoggerFactory.getLogger(CompanyMovementServiceImpl.class);
 
 	@Autowired
 	private CompanyMovementRepository companyMovementRepository;
+
+	@Autowired
+	private OperationTypeRepository operationTypeRepository;
 
 	@Autowired
 	private BalanceCalculate balanceCalculate;
@@ -53,6 +62,15 @@ public class CompanyMovementServiceImpl implements CompanyMovementService {
 						|| cm.getOperationType().getShortName().equalsIgnoreCase("CREPAY")) {
 					cm.setMovementType(1);
 					return companyMovementRepository.save(cm);
+				}
+				if (balanceCalculate
+						.numberOfCompanyAccountOperations(companyMovement.getIdOriginMovement()) > balanceCalculate
+								.numberOperationsMonth(companyMovement.getIdOriginMovement())) {
+				OperationType operationType =	operationTypeRepository.findByShortName(Constants.COMISSION).block();
+				cm.setOperationType(operationType);
+				cm.setMovementType(Constants.PASSIVE);
+				cm.setAmount(Constants.COMISSION_VALUE);
+				companyMovementRepository.save(cm);
 				}
 				return Mono.just(companyMovement);
 			});
