@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import bootcamp.microservices.app.companymovements.companyaccounts.CompanyMovementFeignCompanyAccount;
-import bootcamp.microservices.app.companymovements.documents.CompanyAccount;
 import bootcamp.microservices.app.companymovements.documents.CompanyMovement;
 import bootcamp.microservices.app.companymovements.repository.CompanyMovementRepository;
 import bootcamp.microservices.app.companymovements.services.CompanyMovementService;

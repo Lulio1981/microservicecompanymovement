@@ -2,13 +2,11 @@ package bootcamp.microservices.app.companymovements.services;
 
 import java.util.Date;
 
-import org.bouncycastle.crypto.macs.CMac;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import bootcamp.microservices.app.companymovements.companyaccounts.CompanyMovementFeignCompanyAccount;
 import bootcamp.microservices.app.companymovements.documents.CompanyMovement;
 import bootcamp.microservices.app.companymovements.documents.OperationType;
 import bootcamp.microservices.app.companymovements.exceptions.customs.CustomNotFoundException;

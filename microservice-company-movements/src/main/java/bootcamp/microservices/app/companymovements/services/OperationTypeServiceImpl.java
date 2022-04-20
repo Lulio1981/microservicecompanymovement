@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import bootcamp.microservices.app.companymovements.documents.CompanyMovement;
 import bootcamp.microservices.app.companymovements.documents.OperationType;
 import bootcamp.microservices.app.companymovements.exceptions.customs.CustomNotFoundException;
 import bootcamp.microservices.app.companymovements.repository.OperationTypeRepository;
