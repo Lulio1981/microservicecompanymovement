@@ -22,4 +22,7 @@ public interface CompanyMovementService {
 
 	public Flux<CompanyMovement> findByMovementTypeDestiny(String idDestinyMovement);
 
+	public Mono<Double> CalculateBalanceByIdOriginMovement(String idOriginMovement);
+
+	public Flux<CompanyMovement> findAllMovementsByIdProduct(String idOriginMovement);
 }

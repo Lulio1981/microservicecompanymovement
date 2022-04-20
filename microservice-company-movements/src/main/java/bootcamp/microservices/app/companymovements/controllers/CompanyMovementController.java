@@ -56,4 +56,14 @@ public class CompanyMovementController {
 			@PathVariable String idDestinyMovement) {
 		return companyMovementService.findByMovementTypeDestiny(idDestinyMovement);
 	}
+
+	@GetMapping("/idProduct/{idProduct}")
+	public Mono<Double> balanceProductCalculate(@PathVariable String idProduct) {
+		return companyMovementService.CalculateBalanceByIdOriginMovement(idProduct);
+	}
+
+	@GetMapping("idOriginMovementComplete/{idOriginMovementComplete")
+	public Flux<CompanyMovement> searchAllMovementByProduct(@PathVariable String idOriginMovementComplete) {
+		return companyMovementService.findAllMovementsByIdProduct(idOriginMovementComplete);
+	}
 }

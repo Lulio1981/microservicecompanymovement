@@ -86,4 +86,15 @@ public class CompanyMovementServiceImpl implements CompanyMovementService {
 	public Flux<CompanyMovement> findByMovementTypeDestiny(String idOriginMovement) {
 		return companyMovementRepository.findByIdOriginMovement(idOriginMovement);
 	}
+
+	@Override
+	public Mono<Double> CalculateBalanceByIdOriginMovement(String idOriginMovement) {
+		return Mono.just(balanceCalculate.balanceAmount(idOriginMovement));
+	}
+
+	@Override
+	public Flux<CompanyMovement> findAllMovementsByIdProduct(String idOriginMovement) {
+		return Flux.merge(companyMovementRepository.findByIdOriginMovement(idOriginMovement),
+				companyMovementRepository.findByIdDestinyMovement(idOriginMovement));
+	}
 }
